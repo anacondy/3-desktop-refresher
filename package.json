@@ -1,0 +1,13 @@
+{
+  "name": "retro-refresher",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Anacondy",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^28.0.0",
+    "koffi": "^2.6.0" 
+  }
+}
