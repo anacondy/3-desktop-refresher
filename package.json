@@ -30,8 +30,6 @@
       "main.js",
       "preload.js",
       "index.html",
-      "icon.png",
-      "LICENSE"
     ],
     "asarUnpack": [
       "node_modules/koffi/**/*"
