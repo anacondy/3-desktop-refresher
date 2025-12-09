@@ -53,6 +53,8 @@ jobs:
         run: npm run build:${{ matrix.platform }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Disable publishing on pull requests for security
+          PUBLISH_FOR_PULL_REQUEST: false
       
       - name: Upload artifacts (Windows)
         if: matrix.os == 'windows-latest'
