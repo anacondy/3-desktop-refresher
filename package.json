@@ -29,7 +29,7 @@
     "files": [
       "main.js",
       "preload.js",
-      "index.html",
+      "index.html"
     ],
     "asarUnpack": [
       "node_modules/koffi/**/*"
