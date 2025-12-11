@@ -1,4 +1,4 @@
-name: Build and Release
+ename: Build and Release
 
 on:
   push:
@@ -96,7 +96,7 @@ jobs:
           path: dist/*
           retention-days: 7
 
-  release:
+    release:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
