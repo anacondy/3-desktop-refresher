@@ -48,6 +48,21 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
+             
+     - name: Install Windows build dependencies
+       if: matrix.os == 'windows-latest'
+       run: |
+         npm install --save-dev @electron-builder/lib
+         npm install --save-dev @electron-builder/nsis
+     
+     - name: Install macOS build dependencies
+       if: matrix.os == 'macos-latest'
+       run: |
+         npm install --save-dev @electron-builder/lib
+         npm install --save-dev electron-builder@latest
+     
+     - name: Clear electron-builder cache
+       run: rm -rf ~/.cache/electron-builder 2>/dev/null || true
       
       - name: Build application
         run: npm run build:${{ matrix.platform }}
@@ -55,6 +70,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Disable publishing on pull requests for security
           PUBLISH_FOR_PULL_REQUEST: false
+               ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
       
       - name: Upload artifacts (Windows)
         if: matrix.os == 'windows-latest'
