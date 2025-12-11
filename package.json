@@ -1,13 +1,61 @@
 {
   "name": "retro-refresher",
   "version": "1.0.0",
+  "description": "A retro-styled desktop refresher application with cross-platform support",
   "main": "main.js",
   "author": "Anacondy",
+  "license": "MIT",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder -mwl"
   },
   "dependencies": {
+    "koffi": "^2.6.0"
+  },
+  "devDependencies": {
     "electron": "^28.0.0",
-    "koffi": "^2.6.0" 
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.anacondy.retro-refresher",
+    "productName": "Retro Desktop Refresher",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html"
+    ],
+    "asarUnpack": [
+      "node_modules/koffi/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "category": "Utility",
+      "icon": "icon.png"
+    },
+    "publish": null
   }
 }
