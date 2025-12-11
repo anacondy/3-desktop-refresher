@@ -19,7 +19,6 @@ jobs:
   build:
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    
     strategy:
       fail-fast: false
       matrix:
@@ -31,47 +30,45 @@ jobs:
             platform: mac
           - os: ubuntu-latest
             platform: linux
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y libarchive-tools
-      
+
       - name: Install dependencies
         run: npm ci
-             
-     - name: Install Windows build dependencies
-       if: matrix.os == 'windows-latest'
-       run: |
-         npm install --save-dev @electron-builder/lib
-         npm install --save-dev @electron-builder/nsis
-     
-     - name: Install macOS build dependencies
-       if: matrix.os == 'macos-latest'
-       run: |
-         npm install --save-dev @electron-builder/lib
-         npm install --save-dev electron-builder@latest
-     
-     - name: Clear electron-builder cache
-       run: rm -rf ~/.cache/electron-builder 2>/dev/null || true
-      
+
+      - name: Install Windows build dependencies
+        if: matrix.os == 'windows-latest'
+        run: |
+          npm install --save-dev @electron-builder/lib
+          npm install --save-dev @electron-builder/nsis
+
+      - name: Install macOS build dependencies
+        if: matrix.os == 'macos-latest'
+        run: |
+          npm install --save-dev @electron-builder/lib
+          npm install --save-dev electron-builder@latest
+
+      - name: Clear electron-builder cache
+        run: rm -rf ~/.cache/electron-builder 2>/dev/null || true
+
       - name: Build application
         run: npm run build:${{ matrix.platform }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Disable publishing on pull requests for security
           PUBLISH_FOR_PULL_REQUEST: false
-               ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
-      
+          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+
       - name: Upload artifacts (Windows)
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
@@ -79,7 +76,7 @@ jobs:
           name: windows-builds
           path: dist/*
           retention-days: 7
-      
+
       - name: Upload artifacts (macOS)
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
@@ -87,7 +84,7 @@ jobs:
           name: macos-builds
           path: dist/*
           retention-days: 7
-      
+
       - name: Upload artifacts (Linux)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
@@ -96,27 +93,25 @@ jobs:
           path: dist/*
           retention-days: 7
 
-    release:
+  release:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    
     permissions:
       contents: write
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      
+
       - name: Display structure of downloaded files
         run: ls -R artifacts
-      
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
