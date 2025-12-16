@@ -19,19 +19,19 @@ A high-performance, cross-platform desktop refresher application optimized for 6
 
 ### From Source
 
-1. Clone the repository:
-   ```bash
+1. **Clone the repository:**
+   ```powershell
    git clone https://github.com/anacondy/3-desktop-refresher.git
    cd 3-desktop-refresher
    ```
 
-2. Install dependencies:
-   ```bash
+2. **Install dependencies:**
+   ```powershell
    npm install
    ```
 
-3. Run the application:
-   ```bash
+3. **Run the application:**
+   ```powershell
    npm start
    ```
 
@@ -49,20 +49,20 @@ Download the latest release from the [Releases page](https://github.com/anacondy
 
 ### Build from Source
 
-```bash
+```powershell
 npm run build
 ```
 
 ### Run Tests
 
-```bash
+```powershell
 npm test
 ```
 
 ### Create a Release
 
-1. Tag a new version:
-   ```bash
+1. **Tag a new version:**
+   ```powershell
    git tag v1.0.1
    git push origin v1.0.1
    ```
@@ -90,3 +90,9 @@ Check out the live demo on GitHub Pages: [3-Desktop-Refresher Live Demo](https:/
 ## 📝 Wiki
 
 For more details, check out the [Wiki](https://github.com/anacondy/3-desktop-refresher/wiki).
+
+## 💡 Notes
+
+- **GitHub Pages:** The live demo is a static preview. For full functionality, run the application locally or use the pre-built binaries.
+- **Electron App:** This application is designed to run as an Electron app on your desktop, not in the browser sandbox.
+- **Copy-Paste Commands:** All commands above are ready to copy-paste into PowerShell or Command Prompt.
