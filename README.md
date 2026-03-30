@@ -1,98 +1,51 @@
-# 3-Desktop-Refresher
+# Retro Desktop Refresher
 
-A high-performance, cross-platform desktop refresher application optimized for 60+ FPS and high refresh rate displays.
+Welcome to the **Retro Desktop Refresher**! This is a simple, easy-to-use desktop application that helps you quickly refresh your Windows desktop. We made it work across modern and older Windows versions, and it even supports Linux!
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/anacondy/3-desktop-refresher?style=for-the-badge)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/anacondy/3-desktop-refresher/build-and-release.yml?style=for-the-badge)
-![GitHub License](https://img.shields.io/github/license/anacondy/3-desktop-refresher?style=for-the-badge)
+It is built for speed and will run smoothly even on low-end computers. For higher-end screens, it can handle 60 fps, 90 fps, 120 fps, and up to 144 fps to ensure you get a glassy, fast experience.
 
-## 📌 Features
+## Download Now
+The latest built versions are always ready to download. Go to the [Actions tab](https://github.com/anacondy/3-desktop-refresher/actions), select the latest run, and download the `windows-latest-build` (for Windows) or `ubuntu-latest-build` (for Linux).
 
-- **60+ FPS Performance:** Optimized for smooth animations on all devices.
-- **High Refresh Rate Support:** Auto-syncs to display refresh rate (120Hz, 144Hz+).
-- **Cross-Platform:** Windows, macOS, and Linux builds.
-- **GPU Acceleration:** Uses `transform: translateZ(0)` and `will-change` for smooth rendering.
-- **Adaptive Particle Effects:** Adjusts based on device capability.
-- **Automated CI/CD:** GitHub Actions for builds, releases, and deployments.
+## Easy Installation
+### Windows (.exe)
+1. Download the executable file from the Actions tab.
+2. Double-click the file to install. The installer handles everything for you.
+3. Open "Retro Desktop Refresher".
 
-## 📦 Installation
+### Linux (.AppImage)
+1. Download the AppImage file.
+2. Make it executable:
+   ```bash
+   chmod +x Retro*.AppImage
+   ```
+3. Run the file by double-clicking it.
 
-### From Source
+## For Developers (Build it yourself)
+Do you want to see how it works or make changes? Great!
 
-1. **Clone the repository:**
-   ```powershell
+1. Clone this code to your computer:
+   ```bash
    git clone https://github.com/anacondy/3-desktop-refresher.git
    cd 3-desktop-refresher
    ```
-
-2. **Install dependencies:**
-   ```powershell
+2. Install the necessary tools:
+   ```bash
    npm install
    ```
-
-3. **Run the application:**
-   ```powershell
+3. Start the app:
+   ```bash
    npm start
    ```
-
-### Pre-Built Binaries
-
-Download the latest release from the [Releases page](https://github.com/anacondy/3-desktop-refresher/releases).
-
-## 🚀 Usage
-
-- Launch the application.
-- Enjoy smooth animations and high refresh rate support.
-- Use the settings menu to adjust particle effects and performance.
-
-## 🛠️ Development
-
-### Build from Source
-
-```powershell
-npm run build
-```
-
-### Run Tests
-
-```powershell
-npm test
-```
-
-### Create a Release
-
-1. **Tag a new version:**
-   ```powershell
-   git tag v1.0.1
-   git push origin v1.0.1
+4. Build the executable yourself:
+   ```bash
+   npm run build
    ```
 
-2. The GitHub Actions workflow will automatically build and release binaries for all platforms.
+## Why uses this app?
+1. **Low Size:** We pack and compress everything so it doesn't take up space.
+2. **Speed:** Super fast hardware acceleration means less technical debt and more FPS.
+3. **Old Windows Supported:** Yes, it will work on older 32-bit (ia32) Windows systems.
+4. **Secure:** Fully isolated backend contexts.
 
-## 📊 Performance
-
-| Device Type          | FPS (Avg) | Refresh Rate Support | Tested On          |
-|----------------------|-----------|----------------------|---------------------|
-| Low-End PC           | 60+       | 60Hz                 | Intel i3, 8GB RAM   |
-| Mid-Range PC         | 120+      | 120Hz                | Intel i5, 16GB RAM  |
-| High-End PC          | 144+      | 144Hz                | Intel i7, 32GB RAM  |
-| macOS (Intel/ARM)    | 60+       | 60Hz+                | M1, Intel i7        |
-| Linux (AppImage)     | 60+       | 60Hz+                | Ubuntu 22.04        |
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🔗 Live Demo
-
-Check out the live demo on GitHub Pages: [3-Desktop-Refresher Live Demo](https://anacondy.github.io/3-desktop-refresher/)
-
-## 📝 Wiki
-
-For more details, check out the [Wiki](https://github.com/anacondy/3-desktop-refresher/wiki).
-
-## 💡 Notes
-
-- **GitHub Pages:** The live demo is a static preview. For full functionality, run the application locally or use the pre-built binaries.
-- **Electron App:** This application is designed to run as an Electron app on your desktop, not in the browser sandbox.
-- **Copy-Paste Commands:** All commands above are ready to copy-paste into PowerShell or Command Prompt.
+Have fun smoothing out your desktop!

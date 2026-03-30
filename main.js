@@ -20,6 +20,13 @@ function refreshDesktop() {
 }
 
 // --- 2. THE APP WINDOW (Frontend) ---
+// High Performance & FPS Tweaks (60hz to 144hz+)
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-zero-copy');
+app.commandLine.appendSwitch('disable-software-rasterizer');
+app.commandLine.appendSwitch('enable-hardware-overlays');
+
 function createWindow() {
     const win = new BrowserWindow({
         width: 1000,

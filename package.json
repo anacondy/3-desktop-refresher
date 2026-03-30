@@ -38,10 +38,17 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": ["ia32", "x64"]
         }
       ]
     },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true
+    },
+    "compression": "maximum",
     "mac": {
       "target": [
         {
