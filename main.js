@@ -29,8 +29,10 @@ app.commandLine.appendSwitch('enable-hardware-overlays');
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1000,
-        height: 700,
+        width: 980,
+        height: 620,
+        minWidth: 420,
+        minHeight: 250,
         // FRAMELESS & TRANSPARENT: Crucial for rounded corners!
         frame: false,
         transparent: true,
@@ -43,6 +45,17 @@ function createWindow() {
     });
 
     win.loadFile('index.html');
+
+    // Notify renderer for maximization UI states and keep fullscreen fully opaque
+    win.on('maximize', () => {
+        win.setBackgroundColor('#0a0800');
+        win.webContents.send('window-maximized');
+    });
+    win.on('unmaximize', () => {
+        win.setBackgroundColor('#00000000');
+        win.webContents.send('window-unmaximized');
+    });
+    win.on('restore', () => win.webContents.send('window-restored'));
 }
 
 // --- 3. THE BRIDGE (Connecting UI to Backend) ---
@@ -50,6 +63,24 @@ function createWindow() {
 ipcMain.handle('perform-refresh', () => {
     refreshDesktop();
     return "SUCCESS";
+});
+
+ipcMain.handle('minimize-app', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) win.minimize();
+});
+
+ipcMain.handle('maximize-app', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) {
+        if (win.isMaximized()) win.unmaximize();
+        else win.maximize();
+    }
+});
+
+ipcMain.handle('close-app', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) win.close();
 });
 
 // --- 4. APP LIFECYCLE ---
