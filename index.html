@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Retro Console - Hybrid</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root {
+         :root {
             --retro-orange: #ffb000;
             --retro-dark: #0a0800;
             --glass-border: rgba(255, 176, 0, 0.3);
         }
-
-        body, html {
+        
+        body,
+        html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             /* Transparent background so the rounded corners work */
-            background-color: transparent; 
+            background-color: transparent;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'VT323', monospace;
-            -webkit-app-region: drag; /* Allow dragging the whole app */
+            -webkit-app-region: drag;
+            /* Allow dragging the whole app */
             transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.24s ease;
             will-change: transform, opacity;
             font-variant-numeric: tabular-nums;
         }
-
+        
         body.is-maximized {
             background-color: var(--retro-dark);
         }
-
+        
         body.minimizing {
             transform: translate3d(0, 50vh, 0) scale(0.62);
             opacity: 0;
         }
-
+        
         body.closing {
             transform: translate3d(0, 0, 0) scale(0.92);
             opacity: 0;
         }
-
         /* ROUNDED CONTAINER */
+        
         #crt-container {
             position: relative;
             width: 100vw;
             height: 100vh;
             background-color: var(--retro-dark);
             /* ROUNDED EDGES HERE: */
-            border-radius: 25px; 
+            border-radius: 25px;
             border: 2px solid var(--glass-border);
             box-shadow: inset 0 0 20px rgba(255, 176, 0, 0.1);
             overflow: hidden;
@@ -67,7 +70,7 @@
             perspective: 1000px;
             transition: border-radius 0.2s, padding 0.2s;
         }
-
+        
         #crt-container.maximized {
             border-radius: 0px;
             border: 2px solid var(--glass-border);
@@ -75,38 +78,44 @@
             /* Extra padding to prevent Windows maximize boundary clipping on frameless apps */
             padding: 14px;
         }
-
         /* Scanline Overlay */
+        
         #crt-container::before {
             content: " ";
             display: block;
             position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 10;
             background-size: 100% 4px, 3px 100%;
             pointer-events: none;
             opacity: 0.5;
-            border-radius: 25px; /* Match container */
+            border-radius: 25px;
+            /* Match container */
             /* GPU acceleration */
             will-change: opacity;
             transform: translateZ(0);
         }
-
         /* Particle Canvas */
+        
         #particle-canvas {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 5; 
-            pointer-events: auto; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: auto;
             border-radius: 25px;
             /* GPU acceleration for smooth particle rendering */
             transform: translateZ(0);
             will-change: transform;
         }
-
         /* HEADER AREA */
+        
         .header-text {
             display: flex;
             justify-content: space-between;
@@ -122,34 +131,37 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
-
+        
         .left-controls {
             display: flex;
             gap: 12px;
             align-items: center;
-            -webkit-app-region: no-drag; /* Clickable elements */
+            -webkit-app-region: no-drag;
+            /* Clickable elements */
             flex-wrap: nowrap;
             flex-shrink: 1;
             overflow: hidden;
         }
-
+        
         .title-text {
-            -webkit-app-region: drag; /* Allow dragging from the title part */
+            -webkit-app-region: drag;
+            /* Allow dragging from the title part */
             padding-right: 10px;
             white-space: nowrap;
             flex-shrink: 0;
         }
-
+        
         .controls {
             display: flex;
             gap: 12px;
             font-size: 1.12rem;
-            -webkit-app-region: no-drag; /* Clickable buttons */
+            -webkit-app-region: no-drag;
+            /* Clickable buttons */
             white-space: nowrap;
             flex-wrap: nowrap;
             flex-shrink: 0;
         }
-
+        
         .window-controls {
             flex: 0 0 auto;
         }
@@ -167,15 +179,20 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
-        .btn:hover { background: var(--retro-orange); color: #000; }
+        
+        .btn:hover {
+            background: var(--retro-orange);
+            color: #000;
+        }
+        
         .btn-close:hover {
             background: #ff3333;
             color: #fff;
             border-color: #ff3333;
             text-shadow: 0 0 5px #fff;
         }
-
         /* COUNTER BOX */
+        
         .counter-box {
             background: #221a00;
             padding: 3px 10px;
@@ -186,8 +203,8 @@
             flex-shrink: 0;
             box-sizing: border-box;
         }
-
         /* TERMINAL CONTENT */
+        
         #terminal-content {
             flex-grow: 1;
             overflow-y: auto;
@@ -198,295 +215,329 @@
             -webkit-app-region: no-drag;
             padding-right: 10px;
         }
-        #terminal-content::-webkit-scrollbar { width: 6px; }
-        #terminal-content::-webkit-scrollbar-thumb { background: var(--retro-orange); }
-
-        .log-entry { margin-bottom: 8px; }
-        .log-entry.alert { color: #ff3333; text-shadow: 0 0 5px red; }
-        .log-entry.success { color: #55ff55; text-shadow: 0 0 5px lime; }
-
+        
+        #terminal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #terminal-content::-webkit-scrollbar-thumb {
+            background: var(--retro-orange);
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+        }
+        
+        .log-entry.alert {
+            color: #ff3333;
+            text-shadow: 0 0 5px red;
+        }
+        
+        .log-entry.success {
+            color: #55ff55;
+            text-shadow: 0 0 5px lime;
+        }
         /* FOOTER */
-        #footer-section { margin-top: auto; z-index: 20; }
+        
+        #footer-section {
+            margin-top: auto;
+            z-index: 20;
+        }
+        
         .progress-container {
             border: 2px solid var(--retro-orange);
-            height: 25px; width: 100%;
-            padding: 2px; box-sizing: border-box;
+            height: 25px;
+            width: 100%;
+            padding: 2px;
+            box-sizing: border-box;
         }
+        
         .progress-bar-fill {
-            height: 100%; background-color: var(--retro-orange);
-            width: 0%; transition: width 0.3s ease-out;
+            height: 100%;
+            background-color: var(--retro-orange);
+            width: 0%;
+            transition: width 0.3s ease-out;
             /* GPU acceleration for smooth transitions */
             transform: translateZ(0);
             will-change: width;
         }
-        .status-line { display: flex; justify-content: space-between; margin-top: 8px; font-size: 1.1rem; }
+        
+        .status-line {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
+
 <body>
 
-<div id="crt-container">
-    <canvas id="particle-canvas"></canvas>
+    <div id="crt-container">
+        <canvas id="particle-canvas"></canvas>
 
-    <div class="header-text">
-        <div class="left-controls">
-            <span class="title-text">RETRO CONSOLE // SYS.ADMIN</span>
-            <span class="counter-box" id="refresh-counter">REFRESHES: 0</span>
-            <span class="btn" onclick="toggleAuto()" id="btn-auto">[AUTO: ON]</span>
-            <span class="btn" onclick="forceRefresh()">[REFRESH NOW]</span>
+        <div class="header-text">
+            <div class="left-controls">
+                <span class="title-text">RETRO CONSOLE // SYS.ADMIN</span>
+                <span class="counter-box" id="refresh-counter">REFRESHES: 0</span>
+                <span class="btn" onclick="toggleAuto()" id="btn-auto">[AUTO: ON]</span>
+                <span class="btn" onclick="forceRefresh()">[REFRESH NOW]</span>
+            </div>
+            <div class="window-controls controls">
+                <span class="btn" onclick="customMinimize()">[-]</span>
+                <span class="btn" onclick="sys.maxApp()">[□]</span>
+                <span class="btn btn-close" onclick="customClose()">[X]</span>
+            </div>
         </div>
-        <div class="window-controls controls">
-            <span class="btn" onclick="customMinimize()">[-]</span>
-            <span class="btn" onclick="sys.maxApp()">[□]</span>
-            <span class="btn btn-close" onclick="customClose()">[X]</span>
+
+        <div id="terminal-content">
+        </div>
+
+        <div id="footer-section">
+            <div class="progress-container">
+                <div class="progress-bar-fill" id="prog-fill"></div>
+            </div>
+            <div class="status-line">
+                <span id="status-text">SYSTEM STANDBY</span>
+                <span id="time-text">--:--:--</span>
+            </div>
         </div>
     </div>
 
-    <div id="terminal-content">
-        </div>
+    <script>
+        // --- VARIABLES ---
+        const terminal = document.getElementById('terminal-content');
+        const statusText = document.getElementById('status-text');
+        const timeText = document.getElementById('time-text');
+        const progFill = document.getElementById('prog-fill');
+        const counterDisplay = document.getElementById('refresh-counter');
+        const btnAuto = document.getElementById('btn-auto');
 
-    <div id="footer-section">
-        <div class="progress-container">
-            <div class="progress-bar-fill" id="prog-fill"></div>
-        </div>
-        <div class="status-line">
-            <span id="status-text">SYSTEM STANDBY</span>
-            <span id="time-text">--:--:--</span>
-        </div>
-    </div>
-</div>
+        let refreshCount = 0;
+        let autoEnabled = true;
+        let autoInterval = null;
 
-<script>
-    // --- VARIABLES ---
-    const terminal = document.getElementById('terminal-content');
-    const statusText = document.getElementById('status-text');
-    const timeText = document.getElementById('time-text');
-    const progFill = document.getElementById('prog-fill');
-    const counterDisplay = document.getElementById('refresh-counter');
-    const btnAuto = document.getElementById('btn-auto');
-
-    let refreshCount = 0;
-    let autoEnabled = true;
-    let autoInterval = null;
-
-    // --- LOGGING ---
-    function log(msg, type = '') {
-        const div = document.createElement('div');
-        div.className = `log-entry ${type}`;
-        div.textContent = `> ${msg}`;
-        terminal.appendChild(div);
-        terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    // --- REFRESH LOGIC ---
-    async function executeRefresh() {
-        // 1. VISUAL WARNING (The Cross-Check)
-        log("PREPARE FOR REFRESH...", "alert");
-        statusText.textContent = "EXECUTING SHELL COMMAND...";
-        
-        // Fill progress bar quickly to show activity
-        progFill.style.width = "100%";
-
-        // 2. Wait 500ms so user can look at desktop
-        setTimeout(async () => {
-            if (window.sys) {
-                // 3. TRIGGER THE WINDOWS API
-                await window.sys.triggerRefresh();
-                
-                // 4. UPDATE STATS
-                refreshCount++;
-                counterDisplay.textContent = `REFRESHES: ${refreshCount}`;
-                log(`SUCCESS: Desktop Environment Refreshed. (Count: ${refreshCount})`, "success");
-                
-                // 5. Reset UI
-                setTimeout(() => {
-                    progFill.style.width = "0%";
-                    statusText.textContent = autoEnabled ? "WAITING FOR CYCLE..." : "SYSTEM IDLE";
-                }, 1000);
-            } else {
-                log("ERROR: Not in Electron Mode.", "alert");
-            }
-        }, 500);
-    }
-
-    // --- CONTROLS ---
-    function forceRefresh() {
-        log("USER: Manual Override Initiated.");
-        executeRefresh();
-    }
-
-    function toggleAuto() {
-        autoEnabled = !autoEnabled;
-        btnAuto.textContent = autoEnabled ? "[AUTO: ON]" : "[AUTO: OFF]";
-        
-        if(autoEnabled) {
-            log("SYS: Automation Resumed.");
-            startAutoLoop();
-        } else {
-            log("SYS: Automation Paused.");
-            clearInterval(autoInterval);
+        // --- LOGGING ---
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.className = `log-entry ${type}`;
+            div.textContent = `> ${msg}`;
+            terminal.appendChild(div);
+            terminal.scrollTop = terminal.scrollHeight;
         }
-    }
 
-    function startAutoLoop() {
-        clearInterval(autoInterval);
-        autoInterval = setInterval(() => {
-            if(autoEnabled) {
-                log("AUTO: Timer Triggered.");
-                executeRefresh();
-            }
-        }, 10000); // 10 seconds
-    }
+        // --- REFRESH LOGIC ---
+        async function executeRefresh() {
+            // 1. VISUAL WARNING (The Cross-Check)
+            log("PREPARE FOR REFRESH...", "alert");
+            statusText.textContent = "EXECUTING SHELL COMMAND...";
 
-    // --- CLOCK ---
-    setInterval(() => {
-        const now = new Date();
-        timeText.textContent = now.toLocaleTimeString();
-    }, 1000);
+            // Fill progress bar quickly to show activity
+            progFill.style.width = "100%";
 
-    // --- PARTICLE SYSTEM (Optimized for 60+ FPS and High Refresh Rate Displays) ---
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d', { 
-        alpha: true, 
-        desynchronized: true,  // Enable async rendering for better performance
-        willReadFrequently: false 
-    });
-    let particles = [];
-    let animationFrameId;
-    let lastFrameTime = performance.now();
-    let fps = 0;
-    let frameCount = 0;
-    let fpsUpdateTime = performance.now();
-    
-    // Detect low-end devices and adjust particle count
-    const isLowEndDevice = () => {
-        const memory = navigator.deviceMemory; // GB of RAM (if available)
-        const cores = navigator.hardwareConcurrency || 2;
-        return (memory && memory < 4) || cores < 4;
-    };
-    
-    // Adaptive particle count based on device capability
-    const getOptimalParticleCount = () => {
-        if (isLowEndDevice()) {
-            return 30; // Fewer particles for low-end devices
-        }
-        return 60; // Full particle count for capable devices
-    };
-    
-    function resize() {
-        const rect = document.getElementById('crt-container').getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-    }
-    window.addEventListener('resize', resize);
+            // 2. Wait 500ms so user can look at desktop
+            setTimeout(async() => {
+                if (window.sys) {
+                    // 3. TRIGGER THE WINDOWS API
+                    await window.sys.triggerRefresh();
 
-    class Particle {
-        constructor() {
-            this.reset();
-        }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2;
-            this.speedX = (Math.random() - 0.5) * 0.5;
-            this.speedY = (Math.random() - 0.5) * 0.5;
-            this.alpha = Math.random() * 0.5 + 0.1;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-        }
-        draw() {
-            ctx.fillStyle = `rgba(255, 176, 0, ${this.alpha})`;
-            ctx.fillRect(this.x, this.y, this.size, this.size);
-        }
-    }
+                    // 4. UPDATE STATS
+                    refreshCount++;
+                    counterDisplay.textContent = `REFRESHES: ${refreshCount}`;
+                    log(`SUCCESS: Desktop Environment Refreshed. (Count: ${refreshCount})`, "success");
 
-    function initParticles() {
-        resize();
-        const particleCount = getOptimalParticleCount();
-        particles = Array.from({length: particleCount}, () => new Particle());
-        
-        function animate(currentTime) {
-            // Calculate FPS for monitoring
-            frameCount++;
-            const deltaTime = currentTime - lastFrameTime;
-            
-            if (currentTime - fpsUpdateTime >= 1000) {
-                fps = Math.round(frameCount * 1000 / (currentTime - fpsUpdateTime));
-                frameCount = 0;
-                fpsUpdateTime = currentTime;
-                // Log FPS occasionally for debugging (can be removed in production)
-                if (fps < 55) {
-                    console.warn(`Low FPS detected: ${fps}`);
+                    // 5. Reset UI
+                    setTimeout(() => {
+                        progFill.style.width = "0%";
+                        statusText.textContent = autoEnabled ? "WAITING FOR CYCLE..." : "SYSTEM IDLE";
+                    }, 1000);
+                } else {
+                    log("ERROR: Not in Electron Mode.", "alert");
                 }
+            }, 500);
+        }
+
+        // --- CONTROLS ---
+        function forceRefresh() {
+            log("USER: Manual Override Initiated.");
+            executeRefresh();
+        }
+
+        function toggleAuto() {
+            autoEnabled = !autoEnabled;
+            btnAuto.textContent = autoEnabled ? "[AUTO: ON]" : "[AUTO: OFF]";
+
+            if (autoEnabled) {
+                log("SYS: Automation Resumed.");
+                startAutoLoop();
+            } else {
+                log("SYS: Automation Paused.");
+                clearInterval(autoInterval);
             }
-            
-            lastFrameTime = currentTime;
-            
-            // Efficient batch rendering
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Update and draw all particles
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
+        }
+
+        function startAutoLoop() {
+            clearInterval(autoInterval);
+            autoInterval = setInterval(() => {
+                if (autoEnabled) {
+                    log("AUTO: Timer Triggered.");
+                    executeRefresh();
+                }
+            }, 10000); // 10 seconds
+        }
+
+        // --- CLOCK ---
+        setInterval(() => {
+            const now = new Date();
+            timeText.textContent = now.toLocaleTimeString();
+        }, 1000);
+
+        // --- PARTICLE SYSTEM (Optimized for 60+ FPS and High Refresh Rate Displays) ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d', {
+            alpha: true,
+            desynchronized: true, // Enable async rendering for better performance
+            willReadFrequently: false
+        });
+        let particles = [];
+        let animationFrameId;
+        let lastFrameTime = performance.now();
+        let fps = 0;
+        let frameCount = 0;
+        let fpsUpdateTime = performance.now();
+
+        // Detect low-end devices and adjust particle count
+        const isLowEndDevice = () => {
+            const memory = navigator.deviceMemory; // GB of RAM (if available)
+            const cores = navigator.hardwareConcurrency || 2;
+            return (memory && memory < 4) || cores < 4;
+        };
+
+        // Adaptive particle count based on device capability
+        const getOptimalParticleCount = () => {
+            if (isLowEndDevice()) {
+                return 30; // Fewer particles for low-end devices
             }
-            
-            animationFrameId = requestAnimationFrame(animate);
-        }
-        
-        animate(performance.now());
-    }
-    
-    // Cleanup on unload
-    window.addEventListener('beforeunload', () => {
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-        }
-    });
+            return 60; // Full particle count for capable devices
+        };
 
-    // --- WINDOW CONTROL ANIMATIONS ---
-    function customMinimize() {
-        document.body.classList.add('minimizing');
-        setTimeout(() => sys.minApp(), 300);
-    }
-    
-    function customClose() {
-        document.body.classList.add('closing');
-        setTimeout(() => sys.closeApp(), 250);
-    }
+        function resize() {
+            const rect = document.getElementById('crt-container').getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener('resize', resize);
 
-    // Window maximization visual adjustments
-    if (window.sys) {
-        if (sys.onMaximized) {
-            sys.onMaximized(() => {
-                document.getElementById('crt-container').classList.add('maximized');
-                document.body.classList.add('is-maximized');
-            });
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 176, 0, ${this.alpha})`;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
         }
-        if (sys.onUnmaximized) {
-            sys.onUnmaximized(() => {
-                document.getElementById('crt-container').classList.remove('maximized');
-                document.body.classList.remove('is-maximized');
-            });
-        }
-        if (sys.onRestored) {
-            sys.onRestored(() => document.body.classList.remove('minimizing', 'closing'));
-        }
-    }
 
-    // --- BOOT SEQUENCE ---
-    setTimeout(() => {
-        log("SYSTEM BOOT SEQUENCE...");
-        log("LOADING AUTOMATION MODULES...");
+        function initParticles() {
+            resize();
+            const particleCount = getOptimalParticleCount();
+            particles = Array.from({
+                length: particleCount
+            }, () => new Particle());
+
+            function animate(currentTime) {
+                // Calculate FPS for monitoring
+                frameCount++;
+                const deltaTime = currentTime - lastFrameTime;
+
+                if (currentTime - fpsUpdateTime >= 1000) {
+                    fps = Math.round(frameCount * 1000 / (currentTime - fpsUpdateTime));
+                    frameCount = 0;
+                    fpsUpdateTime = currentTime;
+                    // Log FPS occasionally for debugging (can be removed in production)
+                    if (fps < 55) {
+                        console.warn(`Low FPS detected: ${fps}`);
+                    }
+                }
+
+                lastFrameTime = currentTime;
+
+                // Efficient batch rendering
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Update and draw all particles
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            animate(performance.now());
+        }
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+        });
+
+        // --- WINDOW CONTROL ANIMATIONS ---
+        function customMinimize() {
+            document.body.classList.add('minimizing');
+            setTimeout(() => sys.minApp(), 300);
+        }
+
+        function customClose() {
+            document.body.classList.add('closing');
+            setTimeout(() => sys.closeApp(), 250);
+        }
+
+        // Window maximization visual adjustments
+        if (window.sys) {
+            if (sys.onMaximized) {
+                sys.onMaximized(() => {
+                    document.getElementById('crt-container').classList.add('maximized');
+                    document.body.classList.add('is-maximized');
+                });
+            }
+            if (sys.onUnmaximized) {
+                sys.onUnmaximized(() => {
+                    document.getElementById('crt-container').classList.remove('maximized');
+                    document.body.classList.remove('is-maximized');
+                });
+            }
+            if (sys.onRestored) {
+                sys.onRestored(() => document.body.classList.remove('minimizing', 'closing'));
+            }
+        }
+
+        // --- BOOT SEQUENCE ---
         setTimeout(() => {
-            log("READY. WATCH DESKTOP ICONS FOR BLINK.", "alert");
-            initParticles();
-            startAutoLoop();
-        }, 1500);
-    }, 500);
-
-</script>
+            log("SYSTEM BOOT SEQUENCE...");
+            log("LOADING AUTOMATION MODULES...");
+            setTimeout(() => {
+                log("READY. WATCH DESKTOP ICONS FOR BLINK.", "alert");
+                initParticles();
+                startAutoLoop();
+            }, 1500);
+        }, 500);
+    </script>
 </body>
+
 </html>
