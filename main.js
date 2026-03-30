@@ -32,8 +32,8 @@ function createWindow() {
         width: 1000,
         height: 700,
         // FRAMELESS & TRANSPARENT: Crucial for rounded corners!
-        frame: false, 
-        transparent: true, 
+        frame: false,
+        transparent: true,
         backgroundColor: '#00000000', // Completely transparent hex code
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

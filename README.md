@@ -2,9 +2,29 @@
 
 Welcome to the **Retro Desktop Refresher**! This is a simple, easy-to-use desktop application that helps you quickly refresh your Windows desktop. We made it work across modern and older Windows versions, and it even supports Linux!
 
-It is built for speed and will run smoothly even on low-end computers. For higher-end screens, it can handle 60 fps, 90 fps, 120 fps, and up to 144 fps to ensure you get a glassy, fast experience.
+## Run instantly with a Single Command (Windows)
+Don't want to install anything right away? You can run the app directly from GitHub with **just one command**!
+Open your **PowerShell** and paste the following:
 
-## Download Now
+```powershell
+irm https://raw.githubusercontent.com/anacondy/3-desktop-refresher/main/start.ps1 | iex
+```
+
+*(Note: Requires Git and Node.js installed on your PC)*
+
+---
+
+## Specs & Device Support
+This application is heavily optimized to run on virtually any device:
+*   **Space Required**: ~50 MB to download (Highly compressed), ~150 MB when extracted/installed.
+*   **RAM Usage**: Super lightweight (~50-80 MB while running).
+*   **Supported Systems**: 
+    *   Modern Windows (10, 11) - 64-bit
+    *   Older Windows - 32-bit (`ia32`) Supported!
+    *   Linux (.AppImage)
+*   **Performance (FPS & Displays)**: Hardware Accelerated! Syncs organically to your monitor's refresh rate (60Hz, 90Hz, 120Hz, 144Hz+).
+
+## Download Ready-to-use Builds
 The latest built versions are always ready to download. Go to the [Actions tab](https://github.com/anacondy/3-desktop-refresher/actions), select the latest run, and download the `windows-latest-build` (for Windows) or `ubuntu-latest-build` (for Linux).
 
 ## Easy Installation
@@ -41,11 +61,5 @@ Do you want to see how it works or make changes? Great!
    ```bash
    npm run build
    ```
-
-## Why uses this app?
-1. **Low Size:** We pack and compress everything so it doesn't take up space.
-2. **Speed:** Super fast hardware acceleration means less technical debt and more FPS.
-3. **Old Windows Supported:** Yes, it will work on older 32-bit (ia32) Windows systems.
-4. **Secure:** Fully isolated backend contexts.
 
 Have fun smoothing out your desktop!
