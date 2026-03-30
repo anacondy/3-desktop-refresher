@@ -57,7 +57,7 @@
         "linux": {
             "target": ["AppImage"],
             "category": "Utility",
-            "icon": "icon.png"
+            "icon": "linux-icon.png"
         },
         "publish": null
     }
