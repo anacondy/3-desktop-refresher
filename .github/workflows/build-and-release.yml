@@ -1,28 +1,25 @@
-name: Build CI
+﻿name: Build CI
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: $\{\{ matrix.os \}\}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with:
+          node-version: 20
       - run: npm install
       - run: npm run build:win
-        if: matrix.os == 
-'windows-latest'
-
+        if: matrix.os == 'windows-latest'
       - run: npm run build:linux
-        if: matrix.os == 
-'ubuntu-latest'
-
+        if: matrix.os == 'ubuntu-latest'
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-build
+          name: $\{\{ matrix.os \}\}-build
           path: |
             dist/*.exe
             dist/*.AppImage
