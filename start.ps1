@@ -14,7 +14,6 @@ $MinNpmVersion = [System.Version]"6.0.0"
 function Check-Version {
     param(
         [string]$Command,
-        [System.Version]$MinVersion,
         [string]$VersionFlag = "--version"
     )
     
@@ -24,9 +23,11 @@ function Check-Version {
     
     try {
         $versionOutput = & $Command $VersionFlag 2>&1
-        # Extract version number (handles formats like "git version 2.30.0" or "v14.0.0")
-        if ($versionOutput -match '(\d+\.\d+\.\d+)') {
-            return [System.Version]$matches[1]
+        # Extract version number - handles formats like "git version 2.30.0.windows.1" or "v14.0.0-rc.1"
+        # Captures the first three numeric segments (major.minor.patch)
+        if ($versionOutput -match '(\d+)\.(\d+)\.(\d+)') {
+            $version = "$($matches[1]).$($matches[2]).$($matches[3])"
+            return [System.Version]$version
         }
         return $null
     }
@@ -42,7 +43,7 @@ function Verify-Dependencies {
     
     # Check Git
     Write-Host "Checking Git..." -ForegroundColor Cyan
-    $gitVersion = Check-Version -Command "git" -MinVersion $MinGitVersion
+    $gitVersion = Check-Version -Command "git"
     
     if ($null -eq $gitVersion) {
         Write-Host "  ❌ Git is not installed or version cannot be determined." -ForegroundColor Red
@@ -59,7 +60,7 @@ function Verify-Dependencies {
     
     # Check Node.js (node command)
     Write-Host "Checking Node.js..." -ForegroundColor Cyan
-    $nodeVersion = Check-Version -Command "node" -MinVersion $MinNodeVersion
+    $nodeVersion = Check-Version -Command "node"
     
     if ($null -eq $nodeVersion) {
         Write-Host "  ❌ Node.js is not installed or version cannot be determined." -ForegroundColor Red
@@ -76,7 +77,7 @@ function Verify-Dependencies {
     
     # Check npm
     Write-Host "Checking npm..." -ForegroundColor Cyan
-    $npmVersion = Check-Version -Command "npm" -MinVersion $MinNpmVersion
+    $npmVersion = Check-Version -Command "npm"
     
     if ($null -eq $npmVersion) {
         Write-Host "  ❌ npm is not installed or version cannot be determined." -ForegroundColor Red
@@ -85,7 +86,7 @@ function Verify-Dependencies {
     }
     elseif ($npmVersion -lt $MinNpmVersion) {
         Write-Host "  ⚠️  npm version $npmVersion found, but $MinNpmVersion or higher is required." -ForegroundColor Yellow
-        Write-Host "  💡 Try updating npm with: npm install -g npm@latest" -ForegroundColor Yellow
+        Write-Host "  💡 Try updating npm with: npm install -g npm@lts" -ForegroundColor Yellow
         $allOk = $false
     }
     else {
