@@ -23,10 +23,13 @@ function Check-Version {
     
     try {
         $versionOutput = & $Command $VersionFlag 2>&1
-        # Extract version number - handles formats like "git version 2.30.0.windows.1" or "v14.0.0-rc.1"
-        # Captures the first three numeric segments (major.minor.patch)
-        if ($versionOutput -match '(\d+)\.(\d+)\.(\d+)') {
-            $version = "$($matches[1]).$($matches[2]).$($matches[3])"
+        # Extract version number - handles formats like "git version 2.30.0.windows.1" or "v14.0.0-rc.1" or "14" or "2.0"
+        # Captures up to three numeric segments (major.minor.patch)
+        if ($versionOutput -match '(\d+)(?:\.(\d+))?(?:\.(\d+))?') {
+            $major = $matches[1]
+            $minor = if ($matches[2]) { $matches[2] } else { "0" }
+            $patch = if ($matches[3]) { $matches[3] } else { "0" }
+            $version = "$major.$minor.$patch"
             return [System.Version]$version
         }
         return $null

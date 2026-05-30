@@ -10,7 +10,7 @@ Open your **PowerShell** and paste the following:
 irm https://raw.githubusercontent.com/anacondy/3-desktop-refresher/main/start.ps1 | iex
 ```
 
-**Prerequisites:** Requires Git (v2.20+) and Node.js (v14.0+) installed on your PC.
+**Prerequisites:** Requires Git (v2.20+), Node.js (v14.0+), and npm (v6.0+) installed on your PC.
 
 The script will automatically:
 - ✓ Check if Git and Node.js are installed and meet version requirements
