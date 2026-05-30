@@ -10,7 +10,14 @@ Open your **PowerShell** and paste the following:
 irm https://raw.githubusercontent.com/anacondy/3-desktop-refresher/main/start.ps1 | iex
 ```
 
-*(Note: Requires Git and Node.js installed on your PC)*
+**Prerequisites:** Requires Git (v2.20+) and Node.js (v14.0+) installed on your PC.
+
+The script will automatically:
+- ✓ Check if Git and Node.js are installed and meet version requirements
+- ✓ Provide helpful installation links if dependencies are missing or outdated
+- ✓ Download the latest version of the app
+- ✓ Install all required npm packages
+- ✓ Launch the application
 
 ---
 
@@ -44,6 +51,7 @@ The latest built versions are always ready to download. Go to the [Actions tab](
 ## For Developers (Build it yourself)
 Do you want to see how it works or make changes? Great!
 
+### Quick Start
 1. Clone this code to your computer:
    ```bash
    git clone https://github.com/anacondy/3-desktop-refresher.git
@@ -61,5 +69,11 @@ Do you want to see how it works or make changes? Great!
    ```bash
    npm run build
    ```
+
+### Requirements
+- **Git**: v2.20.0 or higher
+- **Node.js**: v14.0.0 or higher (includes npm v6.0.0+)
+
+The startup script (`start.ps1`) automatically validates these versions before running.
 
 Have fun smoothing out your desktop!
