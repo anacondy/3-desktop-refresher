@@ -18,7 +18,7 @@ function Get-StableVersion {
         return $null
     }
 
-    if ($version -match '^[0-9a-f]{40}$') {
+    if ($version -match '^[0-9a-fA-F]{40}$') {
         return $version
     }
 
@@ -29,7 +29,7 @@ $stableRef = Get-StableVersion -Url $StableVersionUrl
 
 if (-not $stableRef) {
     Write-Host "  ❌ Unable to determine the stable version." -ForegroundColor Red
-    Write-Host "  💡 Check stable-version.txt in the repository." -ForegroundColor Yellow
+    Write-Host "  💡 Check https://github.com/anacondy/3-desktop-refresher/blob/main/stable-version.txt" -ForegroundColor Yellow
     exit 1
 }
 
