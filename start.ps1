@@ -22,7 +22,7 @@ function Test-RepoRef {
         return $false
     }
 
-    $invalidPatterns = @('\.\.', '@{', '\\', '//', '^/', '/$')
+    $invalidPatterns = @('\.\.', '@{', '\\', '//', '^/', '/$', ';', '`', '\|', '\$', '&')
     foreach ($pattern in $invalidPatterns) {
         if ($Ref -match $pattern) {
             return $false
@@ -152,7 +152,7 @@ Set-Location $TempDir
 
 if ($RepoRef) {
     Write-Host "Switching to version $RepoRef..." -ForegroundColor Yellow
-    git checkout --quiet $RepoRef
+    git checkout --quiet -- $RepoRef
     if ($LASTEXITCODE -ne 0) {
         Write-Host "  ❌ Unable to checkout version $RepoRef." -ForegroundColor Red
         exit 1

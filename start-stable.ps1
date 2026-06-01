@@ -18,11 +18,11 @@ function Get-StableVersion {
         return $null
     }
 
-    if ($version -match '^[0-9a-fA-F]{7,40}$') {
-        return $version
+    if (-not $version) {
+        return $null
     }
 
-    return $null
+    return ($version -split '\s+')[0]
 }
 
 $stableRef = Get-StableVersion -Url $StableVersionUrl
