@@ -4,11 +4,20 @@ Welcome to the **Retro Desktop Refresher**! This is a simple, easy-to-use deskto
 
 ## Run instantly with a Single Command (Windows)
 Don't want to install anything right away? You can run the app directly from GitHub with **just one command**!
-Open your **PowerShell** and paste the following:
+Open your **PowerShell** and paste one of the following:
+
+### Latest (smart) version
 
 ```powershell
 irm https://raw.githubusercontent.com/anacondy/3-desktop-refresher/main/start.ps1 | iex
 ```
+
+### Stable (last verified) version
+```powershell
+irm https://raw.githubusercontent.com/anacondy/3-desktop-refresher/main/start-stable.ps1 | iex
+```
+
+The stable command pins to the commit listed in `stable-version.txt`.
 
 **Prerequisites:** Requires Git (v2.20+), Node.js (v14.0+), and npm (v6.0+) installed on your PC.
 

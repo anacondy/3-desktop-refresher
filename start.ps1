@@ -4,6 +4,19 @@ Write-Host "========================================" -ForegroundColor Cyan
 
 $RepoUrl = "https://github.com/anacondy/3-desktop-refresher.git"
 $TempDir = "$env:TEMP\RetroDesktopRefresher"
+$RepoRef = if ($env:RETRO_REFRESHER_REF) { $env:RETRO_REFRESHER_REF.Trim() } else { "" }
+
+function Test-RepoRef {
+    param(
+        [string]$Ref
+    )
+    return ($Ref -match '^[A-Za-z0-9._/-]+$' -and -not $Ref.StartsWith("-"))
+}
+
+if ($RepoRef -and -not (Test-RepoRef -Ref $RepoRef)) {
+    Write-Host "Invalid version reference supplied. Use a commit hash, tag, or branch name." -ForegroundColor Red
+    exit 1
+}
 
 # Define minimum required versions
 $MinGitVersion = [System.Version]"2.20.0"
@@ -117,6 +130,15 @@ if (Test-Path $TempDir) {
 Write-Host "`nDownloading latest version from GitHub..." -ForegroundColor Yellow
 git clone --quiet $RepoUrl $TempDir
 Set-Location $TempDir
+
+if ($RepoRef) {
+    Write-Host "Switching to version $RepoRef..." -ForegroundColor Yellow
+    git checkout --quiet $RepoRef
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "  ❌ Unable to checkout version $RepoRef." -ForegroundColor Red
+        exit 1
+    }
+}
 
 Write-Host "Installing required npm packages..." -ForegroundColor Yellow
 npm install --silent
