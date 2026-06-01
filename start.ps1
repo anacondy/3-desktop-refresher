@@ -22,8 +22,11 @@ function Test-RepoRef {
         return $false
     }
 
-    if ($Ref -match '\.\.' -or $Ref -match '@{' -or $Ref -match '\\' -or $Ref -match '//' -or $Ref -match '^/' -or $Ref -match '/$') {
-        return $false
+    $invalidPatterns = @('\.\.', '@{', '\\', '//', '^/', '/$')
+    foreach ($pattern in $invalidPatterns) {
+        if ($Ref -match $pattern) {
+            return $false
+        }
     }
 
     return $true

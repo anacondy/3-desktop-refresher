@@ -18,7 +18,7 @@ function Get-StableVersion {
         return $null
     }
 
-    if ($version -match '^[0-9a-fA-F]{40}$') {
+    if ($version -match '^[0-9a-fA-F]{7,40}$') {
         return $version
     }
 
