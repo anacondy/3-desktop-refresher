@@ -14,10 +14,11 @@ function Get-StableVersion {
         $version = (Invoke-RestMethod -Uri $Url -UseBasicParsing).Trim()
     }
     catch {
+        Write-Host "  ❌ Unable to fetch stable version info: $($_.Exception.Message)" -ForegroundColor Red
         return $null
     }
 
-    if ($version -match '^[0-9a-f]{7,40}$') {
+    if ($version -match '^[0-9a-f]{40}$') {
         return $version
     }
 

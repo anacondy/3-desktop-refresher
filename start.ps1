@@ -10,7 +10,23 @@ function Test-RepoRef {
     param(
         [string]$Ref
     )
-    return ($Ref -match '^[A-Za-z0-9._/-]+$' -and -not $Ref.StartsWith("-"))
+    if ($Ref -match '^[0-9a-fA-F]{7,40}$') {
+        return $true
+    }
+
+    if ($Ref.StartsWith("-")) {
+        return $false
+    }
+
+    if ($Ref -notmatch '^[A-Za-z0-9._/-]+$') {
+        return $false
+    }
+
+    if ($Ref -match '\.\.' -or $Ref -match '@{' -or $Ref -match '\\' -or $Ref -match '//' -or $Ref -match '^/' -or $Ref -match '/$') {
+        return $false
+    }
+
+    return $true
 }
 
 if ($RepoRef -and -not (Test-RepoRef -Ref $RepoRef)) {
