@@ -3,17 +3,36 @@ const path = require('path');
 const koffi = require('koffi');
 
 // --- 1. THE WINDOWS MAGIC (Backend) ---
-// We load the system DLL to talk to the Desktop
-const shell32 = koffi.load('shell32.dll');
+// PHASE 3 (M1): Load shell32.dll by its FULL absolute path instead of a bare name.
+// This bypasses the default DLL search order (which searches the app directory
+// before System32) and closes the DLL-planting / search-order-hijacking vector.
+function loadShell32() {
+    // Only Windows has shell32.dll. Gracefully handle other platforms so the
+    // process doesn't throw at module load (also fixes L3 crash-on-Linux).
+    if (process.platform !== 'win32') {
+        return null;
+    }
+    const sysRoot = process.env.SystemRoot || 'C:\\Windows';
+    const shell32Path = path.join(sysRoot, 'System32', 'shell32.dll');
+    return koffi.load(shell32Path);
+}
 
-// FIXED SIGNATURE: Using 'void *' instead of 'ptr' to prevent errors
-const SHChangeNotify = shell32.func('void SHChangeNotify(long wEventId, unsigned int uFlags, void *dwItem1, void *dwItem2)');
+const shell32 = loadShell32();
 
-// Constants for the "Refresh" command
+let SHChangeNotify = null;
 const SHCNE_ASSOCCHANGED = 0x08000000;
 const SHCNF_IDLIST = 0x0000;
 
+if (shell32) {
+    // FIXED SIGNATURE: Using 'void *' instead of 'ptr' to prevent errors
+    SHChangeNotify = shell32.func('void SHChangeNotify(long wEventId, unsigned int uFlags, void *dwItem1, void *dwItem2)');
+}
+
 function refreshDesktop() {
+    if (!SHChangeNotify) {
+        console.log("SYSTEM: shell32.dll unavailable on this platform - refresh skipped.");
+        return;
+    }
     console.log("SYSTEM: Executing SHChangeNotify...");
     // The nulls represent pointers to nothing, which is what the command expects
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, null, null);

@@ -6,12 +6,17 @@ on:
     paths:
       - 'wiki/**'
 
+# PHASE 3 (M3): least-privilege token.
+permissions:
+  contents: read
+
 jobs:
   update-wiki:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Push Wiki Changes
+        # PHASE 3 (M3): pinned to current @v1 (replace with SHA for max hardening).
         uses: Andrew-Cannon/github-wiki-action@v1
         with:
           wiki-directory: "wiki"

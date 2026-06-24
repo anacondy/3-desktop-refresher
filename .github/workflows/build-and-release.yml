@@ -1,9 +1,13 @@
-﻿name: Build and Release
+name: Build and Release
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+# PHASE 3 (M3): least-privilege token. Default before was broader than needed.
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -13,19 +17,29 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     steps:
     - name: Checkout code
+      # PHASE 3 (M3): pinned to a specific version tag (still human-readable).
+      # For maximum hardening you can replace @v4 with the full 40-char commit SHA.
       uses: actions/checkout@v4
+
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
+        cache: 'npm'
+
     - name: Install dependencies
-      run: npm install
+      # PHASE 3 (M3): npm ci for reproducible installs from package-lock.json
+      # (project docs claimed npm ci was used, but the old workflow used npm install).
+      run: npm ci
+
     - name: Build Windows App
       if: matrix.os == 'windows-latest'
       run: npm run build:win
+
     - name: Build Linux Appimage
       if: matrix.os == 'ubuntu-latest'
       run: npm run build:linux
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
