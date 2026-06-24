@@ -1,6 +1,6 @@
 {
     "name": "retro-refresher",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A retro-styled desktop refresher application with cross-platform support",
     "main": "main.js",
     "author": "Anacondy",
@@ -11,14 +11,15 @@
         "build:win": "electron-builder --win",
         "build:mac": "electron-builder --mac",
         "build:linux": "electron-builder --linux",
-        "build:all": "electron-builder -mwl"
+        "build:all": "electron-builder -mwl",
+        "postinstall": "electron-builder install-app-deps"
     },
     "dependencies": {
         "koffi": "^2.6.0"
     },
     "devDependencies": {
-        "electron": "^28.0.0",
-        "electron-builder": "^24.9.1"
+        "electron": "^42.5.0",
+        "electron-builder": "^26.15.3"
     },
     "build": {
         "appId": "com.anacondy.retro-refresher",

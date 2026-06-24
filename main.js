@@ -40,7 +40,11 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
-            contextIsolation: true
+            contextIsolation: true,
+            // PHASE 1 (C1): run the renderer in the Chromium sandbox.
+            // Safe here because preload.js only uses contextBridge + ipcRenderer
+            // (both available to sandboxed preloads). Greatly limits exploit blast radius.
+            sandbox: true
         }
     });
 
