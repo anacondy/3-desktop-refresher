@@ -1,6 +1,6 @@
 {
     "name": "retro-refresher",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "A retro-styled desktop refresher application with cross-platform support",
     "main": "main.js",
     "author": "Anacondy",
@@ -30,7 +30,9 @@
         "files": [
             "main.js",
             "preload.js",
-            "index.html"
+            "index.html",
+            "app.js",
+            "app.css"
         ],
         "asarUnpack": [
             "node_modules/koffi/**/*"

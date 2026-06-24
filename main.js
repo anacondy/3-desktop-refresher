@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, session } = require('electron');
 const path = require('path');
 const koffi = require('koffi');
 
@@ -42,13 +42,28 @@ function createWindow() {
             nodeIntegration: false,
             contextIsolation: true,
             // PHASE 1 (C1): run the renderer in the Chromium sandbox.
-            // Safe here because preload.js only uses contextBridge + ipcRenderer
-            // (both available to sandboxed preloads). Greatly limits exploit blast radius.
             sandbox: true
         }
     });
 
     win.loadFile('index.html');
+
+    // PHASE 2 (H2): never let the renderer open an in-app popup window.
+    // External http(s) links are handed to the user's real browser.
+    win.webContents.setWindowOpenHandler(({ url }) => {
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            shell.openExternal(url);
+        }
+        return { action: 'deny' };
+    });
+
+    // PHASE 2 (H2): prevent the main page from navigating away from the local file.
+    win.webContents.on('will-navigate', (event, url) => {
+        const parsed = new URL(url);
+        if (parsed.protocol !== 'file:') {
+            event.preventDefault();
+        }
+    });
 
     // Notify renderer for maximization UI states and keep fullscreen fully opaque
     win.on('maximize', () => {
@@ -61,6 +76,17 @@ function createWindow() {
     });
     win.on('restore', () => win.webContents.send('window-restored'));
 }
+
+// PHASE 2 (H2): global guard - block new windows / <webview> for ALL web contents.
+app.on('web-contents-created', (_event, contents) => {
+    contents.setWindowOpenHandler(({ url }) => {
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            shell.openExternal(url);
+        }
+        return { action: 'deny' };
+    });
+    contents.on('will-attach-webview', (event) => event.preventDefault());
+});
 
 // --- 3. THE BRIDGE (Connecting UI to Backend) ---
 // Listen for the signal from your Retro UI
@@ -88,7 +114,14 @@ ipcMain.handle('close-app', (event) => {
 });
 
 // --- 4. APP LIFECYCLE ---
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    // PHASE 2 (M4): deny all permission requests (camera/mic/geolocation/etc.)
+    // by default. This app needs none of them.
+    session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
+    session.defaultSession.setPermissionCheckHandler(() => false);
+
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
