@@ -7,26 +7,25 @@
     <title>GitHub Retro Console - Hybrid</title>
 
     <!--
-      PHASE 2 (H1): Content Security Policy.
-      - script-src 'self'        -> only app.js, NO inline scripts / no unsafe-inline
-      - style-src  'self' + fonts API  -> only app.css + the Google Fonts stylesheet
-      - font-src   'self' + gstatic    -> actual VT323 font files (L1 will self-host later)
-      - everything else locked to 'self' / blocked
-      NOTE: this only works because all inline scripts/styles & onclick handlers were
-      externalized into app.js / app.css with addEventListener.
+      PHASE 4 (L1): CSP tightened to the MAX.
+      Now that the VT323 font is self-hosted (app.css @font-face + fonts/*.woff2),
+      EVERYTHING is locked to 'self'. Zero external hosts remain:
+        - no more https://fonts.googleapis.com (style-src)
+        - no more https://fonts.gstatic.com (font-src)
+      The app now makes ZERO outbound network requests.
     -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src 'self';
-        style-src 'self' https://fonts.googleapis.com;
-        font-src 'self' https://fonts.gstatic.com;
+        style-src 'self';
+        font-src 'self';
         img-src 'self' data:;
         connect-src 'self';
         object-src 'none';
         base-uri 'none';
     ">
 
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <!-- Google Fonts <link> REMOVED. Font is now bundled locally via app.css @font-face. -->
     <link rel="stylesheet" href="app.css">
 </head>
 
@@ -44,7 +43,7 @@
             </div>
             <div class="window-controls controls">
                 <span class="btn" id="btn-min">[-]</span>
-                <span class="btn" id="btn-max">[▢]</span>
+                <span class="btn" id="btn-max">[â–¡]</span>
                 <span class="btn btn-close" id="btn-close">[X]</span>
             </div>
         </div>
@@ -65,7 +64,6 @@
 
     <!-- Loaded at end of body so all DOM elements exist before app.js runs -->
     <script src="app.js"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a10c7c322f6bf47c',t:'MTc4MjMxMjAwMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 
 </html>
