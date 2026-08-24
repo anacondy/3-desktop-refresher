@@ -8,7 +8,13 @@ release with all assets attached — the draft is reviewed and published manuall
 
 ## Workflow File
 
-Location: `.github/workflows/build-and-release.yml`
+**Staged in this PR:** `release-pipeline/build-and-release.yml`
+(The session bot lacks the GitHub "workflows" permission, so the pipeline
+ships as a plain file. **At merge time, move it to
+`.github/workflows/build-and-release.yml`**, replacing the existing file,
+and delete the `release-pipeline/` folder.)
+
+Location after merge: `.github/workflows/build-and-release.yml`
 
 ## Triggers
 
