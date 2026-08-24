@@ -118,9 +118,24 @@ jobs:
             | while IFS= read -r -d '' f; do cp "$f" release-assets/; done
           echo "=== release assets ==="
           ls -lh release-assets/
+          # Strict check: the release must contain EXACTLY the 5 expected
+          # assets, no more, no less — never ship a partial or duplicated set.
+          expected=(
+            "Retro-Desktop-Refresher-Windows-x64-setup.exe"
+            "Retro-Desktop-Refresher-Windows-ia32-setup.exe"
+            "Retro-Desktop-Refresher-macOS-arm64.zip"
+            "Retro-Desktop-Refresher-macOS-x64.zip"
+            "Retro-Desktop-Refresher-Linux-x64.AppImage"
+          )
+          for f in "${expected[@]}"; do
+            if [ ! -f "release-assets/$f" ]; then
+              echo "::error::Missing expected release asset: $f. Not creating a release."
+              exit 1
+            fi
+          done
           count=$(find release-assets -type f | wc -l)
-          if [ "$count" -lt 5 ]; then
-            echo "::error::Expected 5 release assets (win x64, win ia32, mac x64, mac arm64, linux x64) but found $count. Not creating a release."
+          if [ "$count" -ne 5 ]; then
+            echo "::error::Expected exactly 5 release assets but found $count. Not creating a release."
             exit 1
           fi
 

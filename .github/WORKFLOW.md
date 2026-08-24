@@ -63,9 +63,10 @@ Notes:
 
 1. **Download** all three build artifacts (`actions/download-artifact` pinned
    to commit `d3f86a106a0bac45b974a628896c90dbdf5c8093`, v4.3.0)
-2. **Collect** the 5 distribution files (`.exe`, `.zip`, `.AppImage`); the job
-   **fails** if fewer than 5 assets are found, so a partial release can never
-   be created
+2. **Collect** the distribution files (`.exe`, `.zip`, `.AppImage`) and
+   verify the set is **exactly** the 5 expected asset names — the job fails
+   on any missing or unexpected file, so a partial or duplicated release can
+   never be created
 3. **Create a draft release** with the `gh` CLI (preinstalled on the runner,
    `GH_TOKEN` with `contents: write`) — `gh release create <tag> --draft`.
    The release is **never auto-published**.
