@@ -69,7 +69,7 @@ Pick the asset that matches your system:
 
 ### Specs
 *   **Download size:** ~100–130 MB per platform asset (highly compressed; the Electron runtime is bundled inside).
-*   **RAM usage:** lightweight (~50–80 MB while running).
+*   **RAM usage:** ~150–200 MB while running — normal for an Electron app (the window runs as a few small Electron processes, see Task Manager). CPU stays near idle between the 10-second refresh cycles; each refresh briefly spikes the CPU while Windows redraws the desktop icons.
 *   **Performance:** hardware-accelerated UI, syncs to your monitor's refresh rate (60 Hz, 90 Hz, 120 Hz, 144 Hz+).
 
 ## Easy Installation (summary)
