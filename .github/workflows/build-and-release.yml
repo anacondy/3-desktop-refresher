@@ -170,6 +170,5 @@ jobs:
             --draft \
             --title "Retro Desktop Refresher ${TAG}" \
             --notes-file RELEASE_NOTES.md \
-            --verify-tag \
             release-assets/*
           echo "Draft release created for ${TAG} — review and publish it from the Releases page."
