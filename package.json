@@ -49,7 +49,8 @@
             "oneClick": false,
             "perMachine": false,
             "allowToChangeInstallationDirectory": true,
-            "deleteAppDataOnUninstall": true
+            "deleteAppDataOnUninstall": true,
+            "buildUniversalInstaller": false
         },
         "compression": "maximum",
         "mac": {

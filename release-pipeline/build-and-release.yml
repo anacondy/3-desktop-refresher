@@ -53,6 +53,10 @@ jobs:
             platform: macOS
           - os: ubuntu-latest
             platform: Linux
+    # NOTE: Windows NSIS is configured with buildUniversalInstaller: false
+    # (package.json) so exactly ONE installer per arch is produced. The
+    # default (universal) mode would additionally emit a combined x64+ia32
+    # installer with no arch in the name, which we do not want in releases.
     steps:
       - name: Checkout code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0

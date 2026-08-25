@@ -40,6 +40,10 @@ Notes:
   code-signed; a zip is the more robust unsigned distribution format.
 - Windows **ia32** is kept because Electron 42 still ships a 32-bit Windows
   build and `koffi` ships a `win32_ia32` prebuilt native binary.
+- Windows NSIS uses `buildUniversalInstaller: false` so the release gets
+  exactly one installer per architecture. (electron-builder's default for
+  multi-arch NSIS is a *universal* combined x64+ia32 installer, ~200 MB,
+  whose name omits the architecture — unwanted for clean release assets.)
 - `koffi` ships prebuilt native binaries for all target platforms, so no
   C/C++ toolchain is required on any runner.
 
