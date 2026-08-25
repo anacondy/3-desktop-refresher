@@ -1,0 +1,175 @@
+# ============================================================================
+#  Build and Release — Retro Desktop Refresher
+#
+#  !! MERGE NOTE !!
+#  This file intentionally lives in release-pipeline/ instead of
+#  .github/workflows/ because the bot used in this PR does not have the
+#  GitHub "workflows" permission to modify workflow files.
+#  When merging this PR, MOVE this file to:
+#      .github/workflows/build-and-release.yml
+#  (replacing the existing file) and delete the release-pipeline/ folder.
+#
+#  - Builds on every push to main, every PR to main, on version tags (v*),
+#    and on manual dispatch.
+#  - Each OS is built on its own native runner (electron-builder cannot
+#    cross-compile across operating systems):
+#      * Windows : NSIS installers, x64 + ia32  (windows-latest)
+#      * macOS   : portable .zip,   x64 + arm64 (macos-latest)
+#      * Linux   : AppImage,        x64         (ubuntu-latest)
+#  - On a version tag (v*): all builds must succeed, then a DRAFT GitHub
+#    release is created with every asset attached. The release is NOT
+#    published automatically — review the draft and publish it manually.
+#  - All third-party actions are pinned to full commit SHAs (see comments).
+#    Node.js is pinned to the 22.x LTS line (electron@42 requires >= 22.12).
+# ============================================================================
+
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+# PHASE 3 (M3): least-privilege default token; the release job below
+# additionally requests contents: write (needed only to create the draft).
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # keep building the other platforms if one fails
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: Windows
+          - os: macos-latest
+            platform: macOS
+          - os: ubuntu-latest
+            platform: Linux
+    # NOTE: Windows NSIS is configured with buildUniversalInstaller: false
+    # (package.json) so exactly ONE installer per arch is produced. The
+    # default (universal) mode would additionally emit a combined x64+ia32
+    # installer with no arch in the name, which we do not want in releases.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+
+      - name: Use Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        # Reproducible install from package-lock.json (npm ci).
+        # koffi ships prebuilt native binaries for every target platform,
+        # so no C/C++ toolchain is needed on any runner.
+        run: npm ci
+
+      - name: Build Windows (NSIS installer, x64 + ia32)
+        if: matrix.os == 'windows-latest'
+        run: npm run build:win
+
+      - name: Build macOS (portable .zip, x64 + arm64)
+        if: matrix.os == 'macos-latest'
+        run: npm run build:mac
+
+      - name: Build Linux (AppImage, x64)
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run build:linux
+
+      - name: List build output
+        shell: bash
+        run: |
+          echo "=== dist/ ==="
+          ls -lh dist/
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: retro-refresher-${{ matrix.platform }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    name: Create draft release
+    # Only on version-tag pushes, and only after every build job succeeded.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
+        with:
+          path: artifacts
+
+      - name: Collect release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          # Real distribution files only (skips *.blockmap / builder-debug.yml)
+          find artifacts -type f \( -name '*.exe' -o -name '*.zip' -o -name '*.AppImage' \) -print0 \
+            | while IFS= read -r -d '' f; do cp "$f" release-assets/; done
+          echo "=== release assets ==="
+          ls -lh release-assets/
+          # Strict check: the release must contain EXACTLY the 5 expected
+          # assets, no more, no less — never ship a partial or duplicated set.
+          expected=(
+            "Retro-Desktop-Refresher-Windows-x64-setup.exe"
+            "Retro-Desktop-Refresher-Windows-ia32-setup.exe"
+            "Retro-Desktop-Refresher-macOS-arm64.zip"
+            "Retro-Desktop-Refresher-macOS-x64.zip"
+            "Retro-Desktop-Refresher-Linux-x64.AppImage"
+          )
+          for f in "${expected[@]}"; do
+            if [ ! -f "release-assets/$f" ]; then
+              echo "::error::Missing expected release asset: $f. Not creating a release."
+              exit 1
+            fi
+          done
+          count=$(find release-assets -type f | wc -l)
+          if [ "$count" -ne 5 ]; then
+            echo "::error::Expected exactly 5 release assets but found $count. Not creating a release."
+            exit 1
+          fi
+
+      - name: Create DRAFT GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF#refs/tags/}"
+          {
+            echo "Retro Desktop Refresher ${TAG}"
+            echo
+            echo "Ready-to-use, self-contained builds — no Git, Node.js, or any other tooling required."
+            echo
+            echo "### Assets"
+            for f in release-assets/*; do echo "- \`$(basename "$f")\`"; done
+            echo
+            echo "### First run"
+            echo "- **Windows** (x64 or 32-bit): run the installer. This build is not code-signed, so SmartScreen may show \"Windows protected your PC\" — choose *More info* → *Run anyway*."
+            echo "- **macOS** (Apple Silicon or Intel): unzip, then drag \"Retro Desktop Refresher.app\" into *Applications*. This build is not code-signed, so on first launch right-click the app → *Open* (or use System Settings → Privacy & Security → *Open Anyway*)."
+            echo "- **Linux** (x64): run \`chmod +x Retro-Desktop-Refresher-Linux-x64.AppImage\`, then start it by double-clicking or from a terminal. If you get a FUSE error, run it with \`--appimage-extract-and-run\`."
+            echo
+            echo "> Note: the desktop refresh (icon blink) uses a Windows API (SHChangeNotify), so it only takes effect on Windows. On macOS and Linux the retro console runs normally and the refresh action is a no-op."
+          } > RELEASE_NOTES.md
+          # --draft: never auto-publish. Review the draft, then publish manually.
+          gh release create "$TAG" \
+            --draft \
+            --title "Retro Desktop Refresher ${TAG}" \
+            --notes-file RELEASE_NOTES.md \
+            --verify-tag \
+            release-assets/*
+          echo "Draft release created for ${TAG} — review and publish it from the Releases page."
