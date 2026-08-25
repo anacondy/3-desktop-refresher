@@ -63,7 +63,7 @@
         },
         "linux": {
             "target": ["AppImage"],
-            "artifactName": "Retro-Desktop-Refresher-Linux-${arch}.${ext}",
+            "artifactName": "Retro-Desktop-Refresher-Linux-x64.${ext}",
             "category": "Utility",
             "icon": "linux-icon.png"
         },

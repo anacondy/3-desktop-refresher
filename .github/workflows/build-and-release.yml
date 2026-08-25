@@ -118,7 +118,7 @@ jobs:
           set -euo pipefail
           mkdir -p release-assets
           # Real distribution files only (skips *.blockmap / builder-debug.yml)
-          find artifacts -type f \( -name '*.exe' -o -name '*.zip' -o -name '*.AppImage' \) -print0 \
+          find artifacts -type f -name 'Retro-Desktop-Refresher-*' ! -name '*.blockmap' -print0 \
             | while IFS= read -r -d '' f; do cp "$f" release-assets/; done
           echo "=== release assets ==="
           ls -lh release-assets/
