@@ -152,7 +152,7 @@ jobs:
             exit 1
           fi
 
-      - name: Create DRAFT GitHub release
+      - name: Create or update GitHub release assets
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -175,10 +175,16 @@ jobs:
             echo
             echo "> Note: the desktop refresh (icon blink) uses a Windows API (SHChangeNotify), so it only takes effect on Windows. On macOS and Linux the retro console runs normally and the refresh action is a no-op."
           } > RELEASE_NOTES.md
-          # --draft: never auto-publish. Review the draft, then publish manually.
-          gh release create "$TAG" \
-            --draft \
-            --title "Retro Desktop Refresher ${TAG}" \
-            --notes-file RELEASE_NOTES.md \
-            release-assets/*
-          echo "Draft release created for ${TAG} — review and publish it from the Releases page."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists. Uploading/replacing assets."
+            gh release upload "$TAG" release-assets/* --clobber
+            echo "Release assets updated for ${TAG}."
+          else
+            # --draft: never auto-publish. Review the draft, then publish manually.
+            gh release create "$TAG" \
+              --draft \
+              --title "Retro Desktop Refresher ${TAG}" \
+              --notes-file RELEASE_NOTES.md \
+              release-assets/*
+            echo "Draft release created for ${TAG} — review and publish it from the Releases page."
+          fi
