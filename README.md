@@ -40,6 +40,7 @@ Pick the asset that matches your system:
 |---|---|---|
 | Windows 10 / 11 — 64-bit | `Retro-Desktop-Refresher-Windows-x64-setup.exe` | Run the installer, then launch "Retro Desktop Refresher" |
 | Windows 10 / 11 — 32-bit | `Retro-Desktop-Refresher-Windows-ia32-setup.exe` | Run the installer, then launch "Retro Desktop Refresher" |
+| Windows 7 — 64-bit (legacy build) | `Retro-Desktop-Refresher-Windows-7-x64-setup.exe` | Run the installer (built with Electron 22 for Windows 7 compatibility) |
 | macOS — Apple Silicon (M1/M2/M3/M4) | `Retro-Desktop-Refresher-macOS-arm64.zip` | Unzip, drag **Retro Desktop Refresher.app** into *Applications* |
 | macOS — Intel | `Retro-Desktop-Refresher-macOS-x64.zip` | Unzip, drag **Retro Desktop Refresher.app** into *Applications* |
 | Linux — x64 (64-bit) | `Retro-Desktop-Refresher-Linux-x64.AppImage` | `chmod +x` it, then double-click (or run from a terminal) |
@@ -60,7 +61,8 @@ Pick the asset that matches your system:
 
 - **Windows 10 / 11 (64-bit)** — fully supported, including the desktop refresh feature.
 - **Windows 10 / 11 (32-bit)** — supported via the `ia32` installer.
-- **Windows 7 / 8 / 8.1** — **not supported.** The app runs on Electron 42, whose engine requires Windows 10 or newer.
+- **Windows 7 (64-bit)** — supported via the legacy installer `Retro-Desktop-Refresher-Windows-7-x64-setup.exe` (Electron 22).
+- **Windows 8 / 8.1** — not officially supported.
 - **macOS (Apple Silicon + Intel)** — the app runs normally, but see the note below: the refresh feature itself is a Windows API.
 - **Linux x64** — the app runs normally (AppImage), same note as macOS.
 - **Other Linux architectures (ARM, i686, ...)** — not provided.

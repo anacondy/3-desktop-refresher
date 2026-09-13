@@ -77,6 +77,14 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: npm run build:win
 
+      - name: Install legacy Electron (Windows 7 build)
+        if: matrix.os == 'windows-latest'
+        run: npm install --no-save electron@22.3.27
+
+      - name: Build Windows 7 (legacy NSIS installer, x64)
+        if: matrix.os == 'windows-latest'
+        run: npm run build:win7
+
       - name: Build macOS (portable .zip, x64 + arm64)
         if: matrix.os == 'macos-latest'
         run: npm run build:mac
@@ -127,6 +135,7 @@ jobs:
           expected=(
             "Retro-Desktop-Refresher-Windows-x64-setup.exe"
             "Retro-Desktop-Refresher-Windows-ia32-setup.exe"
+            "Retro-Desktop-Refresher-Windows-7-x64-setup.exe"
             "Retro-Desktop-Refresher-macOS-arm64.zip"
             "Retro-Desktop-Refresher-macOS-x64.zip"
             "Retro-Desktop-Refresher-Linux-x64.AppImage"
@@ -138,8 +147,8 @@ jobs:
             fi
           done
           count=$(find release-assets -type f | wc -l)
-          if [ "$count" -ne 5 ]; then
-            echo "::error::Expected exactly 5 release assets but found $count. Not creating a release."
+          if [ "$count" -ne 6 ]; then
+            echo "::error::Expected exactly 6 release assets but found $count. Not creating a release."
             exit 1
           fi
 
@@ -160,6 +169,7 @@ jobs:
             echo
             echo "### First run"
             echo "- **Windows** (x64 or 32-bit): run the installer. This build is not code-signed, so SmartScreen may show \"Windows protected your PC\" — choose *More info* → *Run anyway*."
+            echo "- **Windows 7** (x64): use \`Retro-Desktop-Refresher-Windows-7-x64-setup.exe\`. This legacy asset is built with Electron 22 for Windows 7 compatibility."
             echo "- **macOS** (Apple Silicon or Intel): unzip, then drag \"Retro Desktop Refresher.app\" into *Applications*. This build is not code-signed, so on first launch right-click the app → *Open* (or use System Settings → Privacy & Security → *Open Anyway*)."
             echo "- **Linux** (x64): run \`chmod +x Retro-Desktop-Refresher-Linux-x64.AppImage\`, then start it by double-clicking or from a terminal. If you get a FUSE error, run it with \`--appimage-extract-and-run\`."
             echo
